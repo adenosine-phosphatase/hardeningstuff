@@ -17,6 +17,10 @@
 # Therefore, any subsequent execution of the powershell script will be prohibited. 
 # You will need to manually re-enable the powershell execution by :
 # Set-ExecutionPolicy unrestricted
+# WARNING!!! There seems to be one undesirable effect when you Disable "Windows Remote Access Shell"
+# WARNING!!! If you set "AllowRemoteShellAccess" to "0" and try to add new role via Server MAnager, it will report error
+# WARNING!!! "WinRM plug-in might be corrupted or missing"
+# WARNING!!! To mitigate, set "AllowRemoteShellAccess" to "1" (enabled). That should do the work.
 
 # sometimes OS complains on the envelopesize, so setting it to 2048
 set-item -Path WSMan:\localhost\MaxEnvelopeSizeKb -Value 2048
@@ -795,6 +799,8 @@ $value=1
 SetRegistryHardening ($registrypath,$name,$value)
 
 # Ensure 'Allow Remote Shell Access' is disabled.
+# WARNING!!! Read the header of the script for this setting- this change will cause problems if you want to add new roles to the server
+# WARNING!!! via Server Manager - set the below "$value=1" if you need to add role(s) in the future
 write-host "[+] Disabling Allow Remote Shell Access"
 $registrypath="HKLM:\Software\Policies\Microsoft\Windows\WinRM\Service\WinRS"
 $name="AllowRemoteShellAccess"
